@@ -1,9 +1,26 @@
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+
+# Virtual environments
 .venv/
 venv/
+env/
+
+# Environment variables
 .env
+
+# Node
+node_modules/
+dist/
+
+# IDE
 .vscode/
 .idea/
-.pytest_cache/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
 *.log
