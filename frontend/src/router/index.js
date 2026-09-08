@@ -1,28 +1,59 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import Products from '../views/Products.vue'
 import Login from '../views/Login.vue'
 import Dashboard from '../views/Dashboard.vue'
+import DashboardHome from '../views/DashboardHome.vue'
+import Products from '../views/Products.vue'
+import Alerts from '../views/Alerts.vue'
+import Stores from '../views/Stores.vue'
 
 const routes = [
   {
     path: '/',
     redirect: '/login'
   },
+
+  // Login
   {
     path: '/login',
     name: 'Login',
     component: Login
   },
-  {
-    path: '/products',
-    name: 'Products',
-    component: Products
-  },
+
+  // Dashboard Layout
   {
     path: '/dashboard',
-    name: 'Dashboard',
-    component: Dashboard
+    component: Dashboard,
+
+    children: [
+      // Dashboard Home
+      {
+        path: '',
+        name: 'DashboardHome',
+        component: DashboardHome
+      },
+
+      // Products
+      {
+        path: 'products',
+        name: 'Products',
+        component: Products
+      },
+
+      // Stores
+      {
+        path: 'stores',
+        name: 'Stores',
+        component: Stores
+      },
+
+      // Alerts
+      {
+        path: 'alerts',
+        name: 'Alerts',
+        component: Alerts
+      }
+    ]
   }
 ]
 
