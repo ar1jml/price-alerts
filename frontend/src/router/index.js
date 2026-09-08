@@ -6,6 +6,7 @@ import DashboardHome from '../views/DashboardHome.vue'
 import Products from '../views/Products.vue'
 import Alerts from '../views/Alerts.vue'
 import Stores from '../views/Stores.vue'
+import PriceHistory from '../views/PriceHistory.vue'
 
 const routes = [
   {
@@ -46,6 +47,11 @@ const routes = [
         name: 'Stores',
         component: Stores
       },
+      {
+  path: '/price-history',
+  name: 'PriceHistory',
+  component: PriceHistory
+},
 
       // Alerts
       {
