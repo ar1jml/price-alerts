@@ -7,7 +7,7 @@ import Products from '../views/Products.vue'
 import Alerts from '../views/Alerts.vue'
 import Stores from '../views/Stores.vue'
 import PriceHistory from '../views/PriceHistory.vue'
-
+import Settings from '../views/Settings.vue'
 const routes = [
   {
     path: '/',
@@ -38,7 +38,10 @@ const routes = [
   name: 'Users',
   component: Users
 },
-
+{
+  path: '/dashboard/settings',
+  component: Settings
+},
       // Products
       {
         path: 'products',
