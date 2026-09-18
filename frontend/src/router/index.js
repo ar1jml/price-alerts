@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-
+import Users from '../views/Users.vue'
 import Login from '../views/Login.vue'
 import Dashboard from '../views/Dashboard.vue'
 import DashboardHome from '../views/DashboardHome.vue'
@@ -7,7 +7,7 @@ import Products from '../views/Products.vue'
 import Alerts from '../views/Alerts.vue'
 import Stores from '../views/Stores.vue'
 import PriceHistory from '../views/PriceHistory.vue'
-
+import Settings from '../views/Settings.vue'
 const routes = [
   {
     path: '/',
@@ -33,7 +33,15 @@ const routes = [
         name: 'DashboardHome',
         component: DashboardHome
       },
-
+      {
+  path: '/users',
+  name: 'Users',
+  component: Users
+},
+{
+  path: '/dashboard/settings',
+  component: Settings
+},
       // Products
       {
         path: 'products',

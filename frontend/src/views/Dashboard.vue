@@ -13,6 +13,7 @@
       class="sidebar"
       :class="{ 'sidebar-open': mobileMenuOpen }"
     >
+      <!-- Sidebar Header -->
       <div class="sidebar-header">
         <div class="logo">
           <div class="logo-icon">P</div>
@@ -20,55 +21,70 @@
         </div>
       </div>
 
+      <!-- Navigation -->
       <nav class="sidebar-nav">
 
+        <!-- Dashboard -->
         <router-link
           to="/dashboard"
           class="nav-item"
+          active-class="nav-item-active"
+          exact-active-class="nav-item-active"
           @click="mobileMenuOpen = false"
         >
           <span class="nav-icon">▦</span>
           <span>Dashboard</span>
         </router-link>
 
+        <!-- Products -->
         <router-link
           to="/dashboard/products"
           class="nav-item"
+          active-class="nav-item-active"
           @click="mobileMenuOpen = false"
         >
           <span class="nav-icon">□</span>
           <span>Products</span>
         </router-link>
 
+        <!-- Stores -->
         <router-link
-  to="/dashboard/stores"
-  class="nav-item"
-  @click="mobileMenuOpen = false"
->
-  <span class="nav-icon">⌂</span>
-  <span>Stores</span>
-</router-link>
+          to="/dashboard/stores"
+          class="nav-item"
+          active-class="nav-item-active"
+          @click="mobileMenuOpen = false"
+        >
+          <span class="nav-icon">⌂</span>
+          <span>Stores</span>
+        </router-link>
+
+        <!-- Alerts -->
         <router-link
           to="/dashboard/alerts"
           class="nav-item"
+          active-class="nav-item-active"
           @click="mobileMenuOpen = false"
         >
           <span class="nav-icon">♢</span>
           <span>Alerts</span>
         </router-link>
 
+        <!-- Price History -->
         <router-link
           to="/price-history"
           class="nav-item"
+          active-class="nav-item-active"
           @click="mobileMenuOpen = false"
         >
           <span class="nav-icon">↗</span>
           <span>Price History</span>
         </router-link>
 
+        <!-- Users -->
         <router-link
           to="/users"
           class="nav-item"
+          active-class="nav-item-active"
           @click="mobileMenuOpen = false"
         >
           <span class="nav-icon">♙</span>
@@ -77,18 +93,24 @@
 
       </nav>
 
+      <!-- Bottom Navigation -->
       <div class="sidebar-bottom">
 
+        <!-- Settings -->
         <router-link
-          to="/settings"
+          to="/dashboard/settings"
           class="nav-item"
+          active-class="nav-item-active"
+          exact-active-class="nav-item-active"
           @click="mobileMenuOpen = false"
         >
           <span class="nav-icon">⚙</span>
           <span>Settings</span>
         </router-link>
 
+        <!-- Logout -->
         <button
+          type="button"
           class="nav-item logout-button"
           @click="logout"
         >
@@ -105,13 +127,17 @@
       <!-- Topbar -->
       <header class="topbar">
 
+        <!-- Mobile Menu -->
         <button
+          type="button"
           class="mobile-menu-button"
+          aria-label="Open menu"
           @click="mobileMenuOpen = !mobileMenuOpen"
         >
           ☰
         </button>
 
+        <!-- Search -->
         <div class="search-wrapper">
           <span class="search-icon">⌕</span>
 
@@ -119,16 +145,24 @@
             v-model="searchQuery"
             type="text"
             placeholder="Search products..."
+            aria-label="Search products"
           />
         </div>
 
+        <!-- Right Side -->
         <div class="topbar-right">
 
-          <button class="notification-button">
+          <!-- Notifications -->
+          <button
+            type="button"
+            class="notification-button"
+            aria-label="Notifications"
+          >
             ♢
             <span class="notification-dot"></span>
           </button>
 
+          <!-- User -->
           <div class="user-menu">
             <div class="user-avatar">
               A
@@ -143,7 +177,7 @@
         </div>
       </header>
 
-      <!-- THIS IS WHERE DashboardHome / Products / Alerts APPEAR -->
+      <!-- Page Content -->
       <main class="content">
         <router-view />
       </main>
@@ -162,6 +196,7 @@ const searchQuery = ref('')
 const mobileMenuOpen = ref(false)
 
 function logout() {
+  mobileMenuOpen.value = false
   router.push('/login')
 }
 </script>
@@ -172,7 +207,9 @@ function logout() {
   background: #f8fafc;
 }
 
-/* SIDEBAR */
+/* =========================
+   SIDEBAR
+========================= */
 
 .sidebar {
   position: fixed;
@@ -193,12 +230,15 @@ function logout() {
 
 .sidebar-header {
   height: 72px;
+
   display: flex;
   align-items: center;
 
   padding: 0 24px;
 
   border-bottom: 1px solid #e5e7eb;
+
+  flex-shrink: 0;
 }
 
 .logo {
@@ -230,8 +270,13 @@ function logout() {
 
 .sidebar-nav {
   flex: 1;
+
   padding: 22px 14px;
+
+  overflow-y: auto;
 }
+
+/* Navigation Item */
 
 .nav-item {
   width: 100%;
@@ -261,13 +306,19 @@ function logout() {
   box-sizing: border-box;
 
   text-align: left;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
 .nav-item:hover {
   background: #f3f4f6;
 }
 
-.nav-item.router-link-active {
+/* Active Navigation Item */
+
+.nav-item-active {
   background: #eff6ff;
   color: #2563eb;
   font-weight: 600;
@@ -275,28 +326,45 @@ function logout() {
 
 .nav-icon {
   width: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   text-align: center;
+
   font-size: 17px;
+
+  flex-shrink: 0;
 }
+
+/* Bottom */
 
 .sidebar-bottom {
   padding: 14px;
 
   border-top: 1px solid #e5e7eb;
+
+  flex-shrink: 0;
 }
 
 .logout-button {
-  text-align: left;
+  appearance: none;
 }
 
-/* MAIN */
+/* =========================
+   MAIN AREA
+========================= */
 
 .main-area {
   margin-left: 250px;
+
   min-height: 100vh;
 }
 
-/* TOPBAR */
+/* =========================
+   TOPBAR
+========================= */
 
 .topbar {
   height: 72px;
@@ -317,8 +385,11 @@ function logout() {
   z-index: 100;
 }
 
+/* Search */
+
 .search-wrapper {
   position: relative;
+
   width: 360px;
 }
 
@@ -338,10 +409,17 @@ function logout() {
   font-size: 14px;
 
   background: #f9fafb;
+
+  color: #111827;
+}
+
+.search-wrapper input::placeholder {
+  color: #9ca3af;
 }
 
 .search-wrapper input:focus {
   border-color: #2563eb;
+
   background: #ffffff;
 }
 
@@ -358,7 +436,11 @@ function logout() {
   font-size: 18px;
 
   z-index: 1;
+
+  pointer-events: none;
 }
+
+/* Topbar Right */
 
 .topbar-right {
   margin-left: auto;
@@ -369,8 +451,17 @@ function logout() {
   gap: 24px;
 }
 
+/* Notifications */
+
 .notification-button {
   position: relative;
+
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   border: none;
   background: transparent;
@@ -382,11 +473,15 @@ function logout() {
   color: #4b5563;
 }
 
+.notification-button:hover {
+  color: #2563eb;
+}
+
 .notification-dot {
   position: absolute;
 
-  top: 0;
-  right: 0;
+  top: 3px;
+  right: 3px;
 
   width: 7px;
   height: 7px;
@@ -395,6 +490,8 @@ function logout() {
 
   border-radius: 50%;
 }
+
+/* User */
 
 .user-menu {
   display: flex;
@@ -423,6 +520,7 @@ function logout() {
   display: block;
 
   font-size: 14px;
+
   color: #111827;
 }
 
@@ -436,18 +534,27 @@ function logout() {
   font-size: 12px;
 }
 
-/* CONTENT */
+/* =========================
+   CONTENT
+========================= */
 
 .content {
   padding: 26px 28px 40px;
 }
 
-/* MOBILE */
+/* =========================
+   MOBILE
+========================= */
 
 .mobile-menu-button {
   display: none;
 
+  width: 38px;
+  height: 38px;
+
   border: none;
+  border-radius: 8px;
+
   background: transparent;
 
   font-size: 24px;
@@ -457,15 +564,26 @@ function logout() {
   color: #374151;
 }
 
+.mobile-menu-button:hover {
+  background: #f3f4f6;
+}
+
 .mobile-overlay {
   display: none;
 }
+
+/* =========================
+   TABLET
+========================= */
 
 @media (max-width: 900px) {
 
   .sidebar {
     transform: translateX(-100%);
+
     transition: transform 0.25s ease;
+
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.08);
   }
 
   .sidebar.sidebar-open {
@@ -477,13 +595,16 @@ function logout() {
   }
 
   .mobile-menu-button {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .mobile-overlay {
     display: block;
 
     position: fixed;
+
     inset: 0;
 
     background: rgba(0, 0, 0, 0.35);
@@ -496,14 +617,21 @@ function logout() {
   }
 }
 
+/* =========================
+   MOBILE
+========================= */
+
 @media (max-width: 600px) {
 
   .topbar {
     padding: 0 16px;
+
+    gap: 12px;
   }
 
   .search-wrapper {
     flex: 1;
+
     width: auto;
   }
 
@@ -517,6 +645,10 @@ function logout() {
 
   .topbar-right {
     gap: 10px;
+  }
+
+  .notification-button {
+    display: none;
   }
 }
 </style>
