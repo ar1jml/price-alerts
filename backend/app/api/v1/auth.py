@@ -1,10 +1,17 @@
+
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
+from app.core.security import (
+    create_access_token,
+    hash_password,
+    verify_password,
+)
 from app.models.user import User
-from app.schemas.user import UserRegister, UserResponse, UserLogin
-from app.core.security import hash_password, verify_password
+from app.schemas.auth import TokenResponse
+from app.schemas.user import UserRegister, UserResponse
 
 
 router = APIRouter(
@@ -22,7 +29,6 @@ def register(
     user_data: UserRegister,
     db: Session = Depends(get_db),
 ):
-    # Check whether the email already exists
     existing_user = (
         db.query(User)
         .filter(User.email == user_data.email)
@@ -35,45 +41,41 @@ def register(
             detail="Email already registered",
         )
 
-    # Hash the password before storing it
-    hashed_password = hash_password(user_data.password)
-
-    # Create the database user
-    new_user = User(
+    user = User(
         name=user_data.name,
         email=user_data.email,
-        password_hash=hashed_password,
+        password_hash=hash_password(user_data.password),
     )
 
-    db.add(new_user)
+    db.add(user)
     db.commit()
-    db.refresh(new_user)
+    db.refresh(user)
 
-    return new_user
+    return user
 
 
-@router.post("/login")
+@router.post(
+    "/login",
+    response_model=TokenResponse,
+)
 def login(
-    user_data: UserLogin,
+    form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db),
 ):
-    # Find user by email
     user = (
         db.query(User)
-        .filter(User.email == user_data.email)
+        .filter(User.email == form_data.username)
         .first()
     )
 
-    # Invalid email
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password",
         )
 
-    # Invalid password
     if not verify_password(
-        user_data.password,
+        form_data.password,
         user.password_hash,
     ):
         raise HTTPException(
@@ -81,11 +83,11 @@ def login(
             detail="Invalid email or password",
         )
 
+    access_token = create_access_token(
+        user_id=user.id,
+    )
+
     return {
-        "message": "Login successful",
-        "user": {
-            "id": user.id,
-            "name": user.name,
-            "email": user.email,
-        },
+        "access_token": access_token,
+        "token_type": "bearer",
     }
