@@ -1,366 +1,322 @@
-# Price Alerts — Intelligent Price Monitoring System
+# Price Alerts
 
-An asynchronous price-monitoring backend that tracks products across online stores, records historical prices, and automatically notifies users when products reach their target prices.
+<p align="center">
+  <strong>Automated Product Price Monitoring & Intelligent Price Notifications</strong>
+</p>
 
-Built with Python, FastAPI, PostgreSQL, Redis, and Celery, with a focus on reliable background processing, scalable architecture, and maintainable backend design.
+<p align="center">
+  Track products, monitor price changes, and receive notifications when your target price is reached.
+</p>
 
 ---
 
 ## Overview
 
-Price Alerts allows users to monitor products from supported online stores without manually checking prices.
+Price Alerts is a full-stack application designed to automate product price monitoring across online stores.
 
-Users can register products, define price thresholds, and receive notifications when prices change or reach their desired target.
+Users can add products, define target prices, track historical price changes, and receive email notifications when products reach their desired price. The system uses asynchronous background processing to handle price monitoring, data collection, alert evaluation, and notification delivery independently of API requests.
 
-The system runs price-checking jobs asynchronously, stores historical price data, evaluates alert conditions, and dispatches notifications through a background processing pipeline.
+The platform is designed around modular backend architecture, reliable task processing, database integrity, and scalable monitoring workflows.
 
-## Core Features
+## Features
 
-### Authentication & Authorization
-- User registration and login
-- Secure password hashing
-- JWT authentication
-- Access token and refresh token management
-- Protected API endpoints
-- User-level resource ownership
-
-### Product Monitoring
-- Track products from supported online stores
-- Extract product names and prices
-- Monitor product availability
-- Normalize prices and currencies
-- Store current product prices
-
-### Price Tracking
-- Historical price records
-- Price change detection
-- Lowest and highest recorded prices
-- Price trend analysis
-- Price-drop percentage calculation
-
-### Alert Management
-- User-defined target prices
-- Price-drop conditions
-- Automated alert evaluation
-- Notification cooldowns
-- Duplicate alert prevention
-- Alert activation and deactivation
-
-### Background Processing
-- Asynchronous price-checking jobs
-- Distributed task processing
-- Scheduled price monitoring
-- Automatic retries
-- Task timeouts
-- Failure handling
-
-### Notifications
+- User authentication and authorization
+- Product tracking across supported online stores
+- Custom target-price alerts
+- Automated price monitoring
+- Historical price tracking
+- Price-drop detection
+- Product availability monitoring
 - Email notifications
+- Asynchronous background processing
+- Scheduled price-checking jobs
+- Retry and failure handling
 - Notification history
-- Delivery status tracking
-- Retry failed notifications
-
----
+- RESTful API
+- API documentation
 
 ## Architecture
 
-The system uses a modular backend architecture with separate responsibilities for API requests, business logic, data persistence, background processing, and external integrations.
+The application separates client requests, business logic, persistence, background processing, and external integrations.
 
 ```mermaid
 flowchart TD
-    A[Client Application] --> B[FastAPI]
-    B --> C[Authentication & Authorization]
-    B --> D[Application Services]
-    D --> E[(PostgreSQL)]
-    D --> F[Redis]
-    F --> G[Celery Workers]
-    H[Celery Beat] --> F
-    G --> I[Store Price Extraction]
-    I --> J[External Stores]
-    G --> K[Price Processing]
-    K --> E
-    K --> L[Alert Evaluation]
-    L --> F
-    F --> M[Notification Worker]
-    M --> N[Email Provider]
+    Client[Vue.js Frontend]
+    API[FastAPI Backend]
+
+    DB[(PostgreSQL)]
+    Redis[(Redis)]
+
+    Scheduler[Celery Beat]
+    Workers[Celery Workers]
+
+    Stores[Online Stores]
+    Email[Email Provider]
+
+    Client --> API
+    API --> DB
+    API --> Redis
+
+    Scheduler --> Redis
+    Redis --> Workers
+
+    Workers --> Stores
+    Workers --> DB
+    Workers --> Redis
+    Workers --> Email
 ```
 
-### Components
+### System Components
 
-| Component | Responsibility |
+| Component | Description |
 |---|---|
-| FastAPI | HTTP endpoints, validation, request handling |
-| PostgreSQL | Persistent application data |
-| SQLAlchemy | Database interaction and ORM |
-| Alembic | Database schema migrations |
-| Redis | Message broker and caching |
-| Celery | Background task execution |
+| Vue.js | Interactive client application |
+| FastAPI | API layer and application entry point |
+| PostgreSQL | Persistent relational data storage |
+| SQLAlchemy | ORM and database interaction |
+| Alembic | Database schema migration management |
+| Redis | Message broker, caching, and task coordination |
+| Celery | Distributed background task processing |
 | Celery Beat | Periodic task scheduling |
-| HTTPX | Asynchronous HTTP communication |
-| Pydantic | Data validation and serialization |
+| HTTPX | HTTP communication with external services |
+| Pydantic | Input validation and serialization |
+| Docker | Containerization and environment management |
 | Pytest | Automated testing |
-| Docker | Containerized development and deployment |
-
----
 
 ## Price Monitoring Workflow
 
-1. A user registers and authenticates.
-2. The user submits a product URL and target price.
-3. The API validates the request and stores the tracking configuration.
-4. A monitoring job is scheduled or queued.
-5. A worker retrieves the product's current price.
-6. The extracted data is validated and normalized.
-7. The current price and historical record are updated.
-8. The alert engine evaluates the user's conditions.
-9. A notification task is queued when an alert condition is satisfied.
-10. The notification worker sends the email and records the delivery result.
-
----
+1. A user submits a product URL and configures a target price.
+2. The backend validates the request and stores the tracking configuration.
+3. A monitoring task is scheduled or queued.
+4. A background worker retrieves the product information and current price.
+5. The extracted data is validated and normalized.
+6. The system stores the latest price and historical price record.
+7. The alert engine evaluates configured price conditions.
+8. Matching alerts trigger notification tasks.
+9. The notification worker sends the email.
+10. The notification result is recorded for tracking and retry handling.
 
 ## Technology Stack
 
+### Frontend
+
+- Vue.js
+- JavaScript
+- Vite
+
 ### Backend
+
 - Python
 - FastAPI
 - Pydantic
-
-### Database
-- PostgreSQL
 - SQLAlchemy 2.0
-- Alembic
+
+### Database & Storage
+
+- PostgreSQL
+- Redis
 
 ### Background Processing
-- Redis
+
 - Celery
 - Celery Beat
 
-### HTTP & Data Extraction
+### Data Collection
+
 - HTTPX
 - BeautifulSoup
 
-### Security
+### Authentication & Security
+
 - JWT
 - Password hashing
-- Authorization and ownership checks
+- Access and refresh tokens
+- Resource ownership enforcement
+- Request validation
+- Rate limiting
 
-### Testing & DevOps
-- Pytest
+### DevOps & Testing
+
 - Docker
 - Docker Compose
+- Pytest
 - GitHub Actions
 
----
+## Database Design
 
-## Database Entities
+The system uses a relational database to manage users, monitored products, alert configurations, price history, and notifications.
 
-The database is designed around the following entities:
-
-| Entity | Description |
+| Entity | Responsibility |
 |---|---|
-| Users | Registered users and authentication data |
-| Stores | Supported online stores |
-| Products | Product information and current prices |
-| Tracked Products | User-to-product tracking relationships |
-| Price Alerts | User-defined alert conditions |
-| Price History | Historical price records |
-| Notifications | Notification attempts and delivery statuses |
+| User | Account and authentication information |
+| Store | Supported online store configuration |
+| Product | Product details and latest price |
+| TrackedProduct | User-to-product tracking relationship |
+| PriceAlert | User-defined alert conditions |
+| PriceHistory | Historical price records |
+| Notification | Notification delivery and status tracking |
 
----
+### Relationships
 
-## API Modules
+- A user can track multiple products.
+- A product can be tracked by multiple users.
+- A store can contain multiple products.
+- A product can have multiple historical price records.
+- A user can create multiple alerts.
+- An alert can generate multiple notification attempts.
 
-The API is organized into versioned modules.
+## API
 
-| Module | Responsibility |
+The backend exposes a versioned REST API.
+
+| Module | Description |
 |---|---|
 | Authentication | Registration, login, token management |
-| Users | User account management |
+| Users | User profile and account management |
 | Products | Product tracking and management |
-| Alerts | Price alert configuration |
-| Price History | Historical pricing information |
-| Notifications | Notification status and history |
+| Alerts | Target-price alert configuration |
+| Price History | Historical prices and trends |
+| Notifications | Notification history and delivery status |
 
-API documentation will be available through Swagger UI and ReDoc.
+### API Documentation
 
----
+Interactive API documentation is provided through:
+
+- Swagger UI — `/docs`
+- ReDoc — `/redoc`
 
 ## Project Structure
 
 ```text
-price-alerts/
-├── app/
-│   ├── api/
-│   │   └── v1/
-│   │       ├── endpoints/
-│   │       └── router.py
-│   ├── core/
-│   │   ├── config.py
-│   │   ├── security.py
-│   │   └── logging.py
-│   ├── db/
-│   │   ├── base.py
-│   │   └── session.py
-│   ├── models/
-│   ├── schemas/
-│   ├── repositories/
-│   ├── services/
-│   ├── workers/
-│   ├── scrapers/
-│   └── main.py
-├── tests/
-├── alembic/
+price-alerts-main/
+├── backend/
+│   ├── app/
+│   │   ├── api/
+│   │   ├── core/
+│   │   ├── db/
+│   │   ├── models/
+│   │   ├── schemas/
+│   │   ├── repositories/
+│   │   ├── services/
+│   │   ├── workers/
+│   │   ├── scrapers/
+│   │   └── main.py
+│   ├── tests/
+│   ├── alembic/
+│   ├── Dockerfile
+│   └── pyproject.toml
+│
+├── frontend/
+│   ├── src/
+│   ├── public/
+│   └── package.json
+│
 ├── docker-compose.yml
-├── Dockerfile
-├── pyproject.toml
-├── .env.example
+├── .gitignore
 └── README.md
 ```
 
----
+## Reliability & Engineering
 
-## Development Setup
+The backend is designed with reliability and data consistency in mind.
+
+- Asynchronous execution for long-running operations
+- Retry strategies for transient failures
+- Request and task timeouts
+- Database transaction management
+- Idempotent background task design
+- Duplicate notification prevention
+- Separation of application and infrastructure concerns
+- Structured logging
+- Health checks
+- Automated testing
+
+## Security
+
+- Secure password hashing
+- JWT-based authentication
+- Protected endpoints
+- User-level authorization
+- Resource ownership verification
+- Input validation
+- Environment-based configuration
+- Rate limiting
+- Secure secret management
+
+## Running Locally
 
 ### Prerequisites
 
 - Python 3.12+
+- Node.js
 - Docker
 - Docker Compose
-- Git
 
-### Installation
-
-Clone the repository:
+### Backend
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/price-alerts.git
-cd price-alerts
-```
-
-Create a virtual environment:
-
-```bash
+cd backend
 python -m venv .venv
 ```
 
-Activate it on Windows:
+Activate the virtual environment:
+
+**Windows**
 
 ```powershell
 .venv\Scripts\Activate.ps1
 ```
 
-Activate it on Linux/macOS:
+**Linux/macOS**
 
 ```bash
 source .venv/bin/activate
 ```
 
-Install dependencies:
+Install backend dependencies:
 
 ```bash
-pip install -r requirements.txt
+pip install -e .
 ```
 
-> Installation instructions will be finalized as the project configuration is implemented.
+### Frontend
 
-### Environment Variables
-
-Create a `.env` file in the project root.
-
-```env
-APP_NAME=Price Alerts
-ENVIRONMENT=development
-SECRET_KEY=replace_with_secure_secret
-
-DATABASE_URL=postgresql+psycopg://postgres:password@localhost:5432/price_alerts
-
-REDIS_URL=redis://localhost:6379/0
-
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-REFRESH_TOKEN_EXPIRE_DAYS=7
-
-SMTP_HOST=
-SMTP_PORT=
-SMTP_USERNAME=
-SMTP_PASSWORD=
-SMTP_FROM_EMAIL=
+```bash
+cd frontend
+npm install
+npm run dev
 ```
 
-Never commit real secrets, passwords, API keys, or production environment variables.
+### Infrastructure
 
----
+```bash
+docker compose up --build
+```
+
+Environment configuration is managed through environment variables. Refer to `.env.example` for required settings.
 
 ## Testing
 
-The project uses Pytest for unit, integration, and API testing.
+The project uses Pytest to validate application behavior across different layers.
+
+Test coverage includes:
+
+- Authentication and authorization
+- API validation
+- Database operations
+- Product tracking
+- Price extraction
+- Alert evaluation
+- Background tasks
+- Notification delivery
+- Failure and retry behavior
+
+Run the test suite:
 
 ```bash
 pytest
 ```
 
-Tests will cover:
-
-- Authentication and token handling
-- API validation
-- Product ownership
-- Database operations
-- Price extraction
-- Alert evaluation
-- Background task behavior
-- Notification processing
-- Error handling
-
----
-
-## Engineering Goals
-
-This project is intended to explore and demonstrate:
-
-- Modular backend architecture
-- REST API design
-- Database relationships and transaction management
-- Asynchronous processing
-- Distributed background tasks
-- Reliability and retry strategies
-- Idempotency
-- Data validation
-- Authentication and authorization
-- Automated testing
-- Containerized deployment
-
----
-
-## Roadmap
-
-- [ ] Project architecture and configuration
-- [ ] PostgreSQL setup
-- [ ] SQLAlchemy models
-- [ ] Alembic migrations
-- [ ] Authentication and authorization
-- [ ] Product management API
-- [ ] Store integration and price extraction
-- [ ] Price history
-- [ ] Alert engine
-- [ ] Redis integration
-- [ ] Celery workers
-- [ ] Scheduled price monitoring
-- [ ] Email notifications
-- [ ] Retry and failure handling
-- [ ] Testing
-- [ ] Dockerized deployment
-- [ ] CI/CD pipeline
-- [ ] Production deployment
-
----
-
-## Project Status
-
-**Status:** In Development
-
-This project is being developed incrementally, starting with the core backend and progressing toward an asynchronous, distributed price-monitoring system.
-
----
-
 ## License
 
-This project is intended for educational and portfolio purposes. A license will be added when the repository is prepared for public distribution.
+MIT License
