@@ -1,10 +1,15 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+import os
 from collections.abc import Generator
-from sqlalchemy.orm import Session
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session, sessionmaker
 
-DATABASE_URL = "postgresql+psycopg://postgres:postgres@localhost:5432/price_alerts"
+from app.core.config import load_environment
+
+load_environment()
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise RuntimeError("DATABASE_URL environment variable must be set")
 
 engine = create_engine(DATABASE_URL)
 

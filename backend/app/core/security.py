@@ -1,12 +1,11 @@
 import os
 from datetime import datetime, timedelta, timezone
-from pathlib import Path
 
-from dotenv import load_dotenv
+from app.core.config import load_environment
 from jose import jwt
 from pwdlib import PasswordHash
 
-load_dotenv(Path(__file__).resolve().parents[2] / ".env")
+load_environment()
 
 password_hash = PasswordHash.recommended()
 JWT_ALGORITHM = "HS256"
