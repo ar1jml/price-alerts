@@ -1,49 +1,65 @@
-# Price Alerts
+# 🛒 Price Alerts
 
 ### Automated Price Tracking & Savings
 
-Price Alerts helps shoppers monitor product prices, track price changes, and know when products reach their desired price—without manually checking stores.
+Help shoppers track product prices, understand price changes, and decide when an item is worth buying.
 
-## Business Value
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/API-FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Vue](https://img.shields.io/badge/Frontend-Vue%203-4FC08D?logo=vuedotjs&logoColor=white)](https://vuejs.org/)
+[![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-- **Save money** — Buy products when prices reach your target.
-- **Save time** — Automate repetitive price checking.
-- **Make smarter decisions** — Use historical price data to understand price trends.
-- **Never miss a deal** — Receive notifications when prices drop.
+---
 
-## How It Works
+## 📋 Overview
 
-1. Add a product URL.
-2. Set your target price.
-3. The system monitors prices automatically.
-4. Receive an email when your target price is reached.
+Price Alerts is an early-stage price-tracking application. The goal is to help shoppers monitor products and get notified when prices reach a target they choose.
 
-## Core Features
+### Current implementation
 
-- Automated price monitoring
-- Custom price alerts
-- Price history and trends
-- Product availability tracking
-- Email notifications
-- User accounts and personal tracking
-- Background monitoring
+- Backend user registration and login endpoints
+- Password hashing and JWT access-token creation
+- Vue 3/Vite dashboard interface prototype
+- PostgreSQL user model and backend tests
 
-## Tech Stack
+The frontend is not yet connected to the authentication API. Product monitoring, price history, scheduled checks, and notifications are planned work, not implemented features.
 
-**Frontend:** Vue.js, JavaScript
+## ✨ Product direction
 
-**Backend:** Python, FastAPI, SQLAlchemy
+The intended user journey is:
 
-**Database:** PostgreSQL, Redis
+1. Add a product page URL and desired price.
+2. Record price checks over time.
+3. Notify the user when a tracked product reaches the desired price.
 
-**Background Jobs:** Celery, Celery Beat
+## 🧰 Technology
 
-**Tools:** Docker, Pytest, GitHub Actions
+| Area | Technology |
+| --- | --- |
+| Frontend | Vue 3, Vite, Vue Router |
+| Backend API | Python, FastAPI |
+| Data access | SQLAlchemy |
+| Database | PostgreSQL |
+| Authentication | `pwdlib` password hashing, JWT access tokens |
+| Tests | Pytest |
 
-## Architecture
+## 🚀 Quick start
 
-The system separates API requests, database operations, scheduled monitoring, background processing, and notification delivery to support reliable automated price tracking.
+See the [Implementation Guide](./Implementation_Guide.md) for environment setup, backend and frontend commands, and API examples.
 
-## License
+The backend requires a local `backend/.env` file containing `DATABASE_URL` and `JWT_SECRET_KEY`. Keep that file private; it is ignored by Git.
 
-MIT
+## 📚 Documentation
+
+- [PRD.md](./PRD.md) — Product goals, requirements, and planned scope
+- [Implementation_Guide.md](./Implementation_Guide.md) — Setup, running, and testing the project
+- [Technical_Architecture.md](./Technical_Architecture.md) — Current system design and implementation boundaries
+
+## 📄 License
+
+The project declares the MIT License.
+
+---
+
+Built with ❤️ for smarter shopping.
