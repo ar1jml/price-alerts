@@ -1,4 +1,4 @@
-# 🛒 Price Alerts
+# Price Alerts
 
 ### Automated Price Tracking & Savings
 
@@ -12,7 +12,7 @@ Help shoppers track product prices, understand price changes, and decide when an
 
 ---
 
-## 📋 Overview
+## Overview
 
 Price Alerts is an early-stage price-tracking application. The goal is to help shoppers monitor products and get notified when prices reach a target they choose.
 
@@ -25,7 +25,7 @@ Price Alerts is an early-stage price-tracking application. The goal is to help s
 
 The frontend is not yet connected to the authentication API. Product monitoring, price history, scheduled checks, and notifications are planned work, not implemented features.
 
-## ✨ Product direction
+## Product direction
 
 The intended user journey is:
 
@@ -33,7 +33,7 @@ The intended user journey is:
 2. Record price checks over time.
 3. Notify the user when a tracked product reaches the desired price.
 
-## 🧰 Technology
+## Technology
 
 | Area | Technology |
 | --- | --- |
@@ -44,22 +44,22 @@ The intended user journey is:
 | Authentication | `pwdlib` password hashing, JWT access tokens |
 | Tests | Pytest |
 
-## 🚀 Quick start
+## Quick start
 
 See the [Implementation Guide](./Implementation_Guide.md) for environment setup, backend and frontend commands, and API examples.
 
 The backend requires a local `backend/.env` file containing `DATABASE_URL` and `JWT_SECRET_KEY`. Keep that file private; it is ignored by Git.
 
-## 📚 Documentation
+## Documentation
 
 - [PRD.md](./PRD.md) — Product goals, requirements, and planned scope
 - [Implementation_Guide.md](./Implementation_Guide.md) — Setup, running, and testing the project
 - [Technical_Architecture.md](./Technical_Architecture.md) — Current system design and implementation boundaries
 
-## 📄 License
+## License
 
 The project declares the MIT License.
 
 ---
 
-Built with ❤️ for smarter shopping.
+Built by Arafat J. | Python Backend Developer
