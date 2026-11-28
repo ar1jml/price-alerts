@@ -50,7 +50,7 @@ Set-Location backend
 uvicorn app.main:app --reload
 ```
 
-The API base URL is `http://127.0.0.1:8000`. Interactive API documentation is at `http://127.0.0.1:8000/docs`.
+The API base URL is `http://127.0.0.1:8000`. Interactive API documentation is at `http://127.0.0.1:8000/docs`. The backend allows the local Vite origins by default; set `FRONTEND_ORIGINS` to a comma-separated list when serving the frontend from another origin.
 
 ### Current authentication endpoints
 
@@ -82,7 +82,7 @@ Content-Type: application/json
 }
 ```
 
-Successful login returns an `access_token` and `token_type`. The current frontend login form is not yet wired to these endpoints.
+Successful login returns an `access_token` and `token_type`. The frontend registration and sign-in forms use these endpoints; after registration, the form flips to sign in.
 
 ## 4. Run backend tests
 
@@ -102,7 +102,7 @@ npm install
 npm run dev
 ```
 
-Vite prints the local frontend URL when it starts. The current frontend is a UI prototype; API integration is still planned.
+Vite prints the local frontend URL when it starts. The authentication form uses `http://127.0.0.1:8000` by default; set `VITE_API_BASE_URL` when the API is hosted elsewhere.
 
 ## Troubleshooting
 
