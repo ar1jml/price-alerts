@@ -1,8 +1,11 @@
 from types import SimpleNamespace
 
 import pytest
+from fastapi import HTTPException
+from fastapi.security import HTTPAuthorizationCredentials
 from jose import jwt
 
+from app.api.auth import get_current_user
 from app.core.security import (
     JWT_ALGORITHM,
     create_access_token,
@@ -18,6 +21,11 @@ class StubSession:
 
     def scalar(self, statement):
         return self.user
+
+    def get(self, model, identity):
+        if self.user is not None and self.user.id == identity:
+            return self.user
+        return None
 
 
 def test_authenticate_user_accepts_matching_password():
@@ -64,3 +72,52 @@ def test_create_access_token_requires_secret(monkeypatch):
 
     with pytest.raises(RuntimeError, match="JWT_SECRET_KEY"):
         create_access_token("42")
+
+
+def test_get_current_user_accepts_valid_bearer_token(monkeypatch):
+    monkeypatch.setenv("JWT_SECRET_KEY", "test-secret-key-for-jwt-signing")
+    user = SimpleNamespace(id=42, email="shopper@example.com")
+    credentials = HTTPAuthorizationCredentials(
+        scheme="Bearer",
+        credentials=create_access_token(str(user.id)),
+    )
+
+    result = get_current_user(credentials, StubSession(user))
+
+    assert result is user
+
+
+@pytest.mark.parametrize(
+    "credentials",
+    [
+        None,
+        HTTPAuthorizationCredentials(
+            scheme="Bearer",
+            credentials="not-a-valid-token",
+        ),
+    ],
+)
+def test_get_current_user_rejects_missing_or_invalid_token(
+    monkeypatch,
+    credentials,
+):
+    monkeypatch.setenv("JWT_SECRET_KEY", "test-secret-key-for-jwt-signing")
+
+    with pytest.raises(HTTPException) as error:
+        get_current_user(credentials, StubSession(None))
+
+    assert error.value.status_code == 401
+    assert error.value.headers == {"WWW-Authenticate": "Bearer"}
+
+
+def test_get_current_user_rejects_unknown_user(monkeypatch):
+    monkeypatch.setenv("JWT_SECRET_KEY", "test-secret-key-for-jwt-signing")
+    credentials = HTTPAuthorizationCredentials(
+        scheme="Bearer",
+        credentials=create_access_token("42"),
+    )
+
+    with pytest.raises(HTTPException) as error:
+        get_current_user(credentials, StubSession(None))
+
+    assert error.value.status_code == 401
