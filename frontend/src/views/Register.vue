@@ -7,6 +7,7 @@ const route = useRoute()
 const isSignIn = ref(route.query.mode === 'signin')
 const email = ref('')
 const password = ref('')
+const showPassword = ref(false)
 const isSubmitting = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
@@ -17,6 +18,7 @@ function toggleMode() {
 
   isSignIn.value = !isSignIn.value
   password.value = ''
+  showPassword.value = false
   errorMessage.value = ''
   successMessage.value = ''
 }
@@ -64,6 +66,7 @@ async function submitForm() {
 
     isSignIn.value = true
     password.value = ''
+    showPassword.value = false
     successMessage.value = 'Account created. Sign in to continue.'
   } catch (error) {
     errorMessage.value = error instanceof Error
@@ -129,20 +132,31 @@ async function submitForm() {
               />
             </label>
 
-            <label class="auth-field" for="register-password">
-              <span>Password</span>
-              <input
-                id="register-password"
-                v-model="password"
-                type="password"
-                name="password"
-                autocomplete="new-password"
-                minlength="8"
-                maxlength="128"
-                placeholder="At least 8 characters"
-                required
-              />
-            </label>
+            <div class="auth-field">
+              <label for="register-password">Password</label>
+              <div class="password-input">
+                <input
+                  id="register-password"
+                  v-model="password"
+                  :type="showPassword ? 'text' : 'password'"
+                  name="password"
+                  autocomplete="new-password"
+                  minlength="8"
+                  maxlength="128"
+                  placeholder="At least 8 characters"
+                  required
+                />
+                <button
+                  class="password-toggle"
+                  type="button"
+                  :aria-label="showPassword ? 'Hide password' : 'Show password'"
+                  :aria-pressed="showPassword"
+                  @click="showPassword = !showPassword"
+                >
+                  <font-awesome-icon :icon="showPassword ? 'eye-slash' : 'eye'" aria-hidden="true" />
+                </button>
+              </div>
+            </div>
 
             <p v-if="errorMessage" class="form-message is-error" role="alert">
               {{ errorMessage }}
@@ -184,19 +198,30 @@ async function submitForm() {
               />
             </label>
 
-            <label class="auth-field" for="signin-password">
-              <span>Password</span>
-              <input
-                id="signin-password"
-                v-model="password"
-                type="password"
-                name="password"
-                autocomplete="current-password"
-                maxlength="128"
-                placeholder="Enter your password"
-                required
-              />
-            </label>
+            <div class="auth-field">
+              <label for="signin-password">Password</label>
+              <div class="password-input">
+                <input
+                  id="signin-password"
+                  v-model="password"
+                  :type="showPassword ? 'text' : 'password'"
+                  name="password"
+                  autocomplete="current-password"
+                  maxlength="128"
+                  placeholder="Enter your password"
+                  required
+                />
+                <button
+                  class="password-toggle"
+                  type="button"
+                  :aria-label="showPassword ? 'Hide password' : 'Show password'"
+                  :aria-pressed="showPassword"
+                  @click="showPassword = !showPassword"
+                >
+                  <font-awesome-icon :icon="showPassword ? 'eye-slash' : 'eye'" aria-hidden="true" />
+                </button>
+              </div>
+            </div>
 
             <p v-if="errorMessage" class="form-message is-error" role="alert">
               {{ errorMessage }}
@@ -405,10 +430,18 @@ async function submitForm() {
   font-weight: 600;
 }
 
+.auth-field > label {
+  cursor: pointer;
+}
+
+.password-input {
+  position: relative;
+}
+
 .auth-field input {
   width: 100%;
   height: 46px;
-  padding: 0 13px;
+  padding: 0 46px 0 13px;
   border: 1px solid var(--brand-border);
   border-radius: 8px;
   outline: none;
@@ -426,6 +459,35 @@ async function submitForm() {
 .auth-field input:focus {
   border-color: var(--brand-primary);
   box-shadow: 0 0 0 3px rgba(39, 119, 255, 0.16);
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  display: grid;
+  place-items: center;
+  padding: 4px;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: var(--brand-muted);
+  cursor: pointer;
+}
+
+.password-toggle:hover {
+  color: var(--brand-text);
+}
+
+.password-toggle:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+.password-toggle svg {
+  width: 15px;
+  height: 15px;
 }
 
 .form-message,
